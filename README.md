@@ -62,3 +62,7 @@ values:
 ```
 
 Do not put secrets in template manifests. Store secrets in external systems such as AWS Secrets Manager, Azure Key Vault, Vault, or SOPS-managed files.
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for delivery rules and the [project audit and backlog](https://github.com/GCICHON-DEV/platformctl/blob/main/docs/project-audit.md) for completion criteria. CI validates and renders manifests with a pinned CLI revision; it does not provision cloud resources.

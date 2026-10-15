@@ -1,0 +1,35 @@
+name: Template CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  template-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          path: registry
+          persist-credentials: false
+      - name: Check out accepted CLI revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: GCICHON-DEV/platformctl
+          ref: 0ecff043167e8c8b9930a0365ad27882a7d993a2
+          path: cli
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: cli/go.mod
+          cache-dependency-path: cli/go.sum
+          cache: true
+      - name: Validate and render every registry manifest without executing workflows
+        working-directory: cli
+        run: go run ./tools/check-templates ../registry
